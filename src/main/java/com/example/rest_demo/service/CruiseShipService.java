@@ -1,60 +1,57 @@
 package com.example.rest_demo.service;
 
 import com.example.rest_demo.rest.domain.CruiseShip;
-import com.example.rest_demo.exeption.SpringShipException;
-import com.example.rest_demo.repository.CruiseShipRepository;
-import jakarta.transaction.Transactional;
 import org.jvnet.hk2.annotations.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Component
 public class CruiseShipService {
 
-    @Autowired
-    private CruiseShipRepository cruiseShipRepository;
 
-    private final Map<CruiseShip,Integer> cruiseShipIntegerMap = new HashMap<>();
+    private final Map<Integer,CruiseShip> shipHashMap = new HashMap<>();
+
+    private final AtomicInteger idCounter = new AtomicInteger();
 
     public List<CruiseShip> findAllShips() {
-        return cruiseShipRepository.findAll();
+        return new LinkedList<CruiseShip>(shipHashMap.values());
     }
 
     public CruiseShip findById(Integer shipId){
-        return cruiseShipRepository.findById(shipId).orElseThrow(
-                () -> new IllegalArgumentException("Cannot find cruise ship by id - " + shipId));
+        return shipHashMap.get(shipId);
     }
 
-    @Transactional
     public CruiseShip createShip(CruiseShip cruiseShip) {
-        return cruiseShipRepository.save(cruiseShip);
+        cruiseShip.setId(idCounter.incrementAndGet());
+        shipHashMap.put(cruiseShip.getId(),cruiseShip);
+        return cruiseShip;
     }
 
-    @Transactional
-    public CruiseShip update(Integer cruiseId,CruiseShip newShip){
-        CruiseShip savedShip = cruiseShipRepository.findById(newShip.getId()).
-                orElseThrow(() ->  new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        savedShip.setName(newShip.getName());
-        savedShip.setCurrentPort(newShip.getCurrentPort());
-        savedShip.setMaxSpeed(newShip.getMaxSpeed());
-        savedShip.setMaxCapacity(newShip.getMaxCapacity());
-        savedShip.setCurrentLoad(newShip.getCurrentLoad());
-        savedShip.setCrewCount(newShip.getCrewCount());
-        savedShip.setPassengersCount(newShip.getPassengersCount());
-        cruiseShipRepository.save(savedShip);
-        return savedShip;
+    public CruiseShip update(Integer cruiseId,CruiseShip cruiseShip){
+        CruiseShip cruiseShip1 = shipHashMap.get(cruiseId);
+        cruiseShip1.setName(cruiseShip.getName());
+        cruiseShip1.setCurrentPort(cruiseShip.getCurrentPort());
+        cruiseShip1.setMaxSpeed(cruiseShip.getMaxSpeed());
+        cruiseShip1.setMaxCapacity(cruiseShip.getMaxCapacity());
+        cruiseShip1.setCurrentLoad(cruiseShip.getCurrentLoad());
+        cruiseShip1.setCrewCount(cruiseShip.getCrewCount());
+        cruiseShip1.setPassengersCount(cruiseShip.getPassengersCount());
+        shipHashMap.put(cruiseId,cruiseShip1);
+        return cruiseShip1;
     }
 
-    public void deleteShipById(Integer shipId){
-        cruiseShipRepository.deleteById(shipId);
+    public ResponseEntity<CruiseShip> deleteShipById(Integer shipId){
+        HttpStatus status = shipHashMap.remove(shipId) == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        return ResponseEntity.status(status).build();
     }
-
 }
