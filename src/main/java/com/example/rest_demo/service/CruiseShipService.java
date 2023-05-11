@@ -5,7 +5,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @Component
 public class CruiseShipService {
-
 
     private final Map<Integer,CruiseShip> shipHashMap = new HashMap<>();
 
@@ -31,6 +29,7 @@ public class CruiseShipService {
     }
 
     public CruiseShip createShip(CruiseShip cruiseShip) {
+
         cruiseShip.setId(idCounter.incrementAndGet());
         shipHashMap.put(cruiseShip.getId(),cruiseShip);
         return cruiseShip;

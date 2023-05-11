@@ -1,19 +1,18 @@
 package com.example.rest_demo.rest.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
 import lombok.*;
-import jakarta.persistence.Id;
+
 
 @Setter
 @Getter
 @AllArgsConstructor
-@Entity
 public class CruiseShip {
+    asd
+    asd
+            asd
+    
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
