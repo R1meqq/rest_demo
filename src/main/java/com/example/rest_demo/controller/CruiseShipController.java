@@ -18,6 +18,7 @@ public class CruiseShipController {
     @Autowired
     private CruiseShipService cruiseShipService;
 
+    private static final String KEY_ = "";
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CruiseShip> getAll(){
