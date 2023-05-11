@@ -11,7 +11,31 @@ public class CruiseShip {
     asd
     asd
             asd
-    
+
+
+    asd
+                    a
+    sdasd
+
+
+
+
+
+
+
+
+
+
+
+
+                            sad
+    asd
+                                    asd
+    asddasdas
+                                            das
+
+    ad
+                                                    
 
     private Integer id;
 
